@@ -6,7 +6,7 @@ searchForm.addEventListener("submit", onSearch);
 
 function getWeather(city, days) {
 
-    const BASE_URL = 'http://api.weatherapi.com/v1';
+    const BASE_URL = 'https://api.weatherapi.com/v1';
     const API_KEY = 'c0dca8ed73ba444e8db231919241301';
     return fetch(`${BASE_URL}/forecast.json?key=${API_KEY}&q=${city}&days=${days}`)
     .then(response => {
