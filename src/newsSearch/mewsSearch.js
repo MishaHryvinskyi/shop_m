@@ -2,7 +2,8 @@ import { getNews } from "./api";
 import { createMarkup } from "./markup";
 import { refs } from "./refs";
 
-refs.formNews.addEventListener('submit', onSearch)
+refs.formNews.addEventListener('submit', onSearch);
+refs.loadMoreBtn.addEventListener('click', onLoadMore);
 
 function onSearch(event) {
     event.preventDefault();
@@ -27,4 +28,8 @@ function onError(err) {
 
 function updateNewsList(markup) {
     refs.listNews.innerHTML = markup
+}
+
+function onLoadMore(event) {
+
 }
