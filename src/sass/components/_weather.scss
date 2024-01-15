@@ -5,3 +5,25 @@
 .list__item-weather {
     margin: 10px;
 }
+
+.js-list-search {
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  background-color: plum;
+}
+
+.js-item-search {
+  overflow: hidden;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  width: 600px;
+  height: 800px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50px;
+}

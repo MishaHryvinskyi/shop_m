@@ -45,5 +45,4 @@ function createMarkup(arr) {
             <h3>${avgtemp_c} ℃</h3>
         </li>
     `).join('');
-    list
 }
