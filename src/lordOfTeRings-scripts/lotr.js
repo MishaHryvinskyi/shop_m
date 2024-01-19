@@ -133,7 +133,7 @@ function onLoad(entries, observer) {
     })
 }
 
-function getTrending(page = 1) {
+ function getTrending(page = 1) {
    return fetch(`${BASE_URL}${END_POINT}?api_key=${API_KEY}&page=${page}&language=uk`)
     .then(response => {
         if(!response.ok){
