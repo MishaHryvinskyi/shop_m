@@ -1,35 +1,58 @@
-import { getNews } from "./api";
-import { createMarkup } from "./markup";
+// import { getNews } from "./NewsApiService";
 import { refs } from "./refs";
+import { createMarkup } from "./markup";
+import NewsApiService from "./NewsApiService";
+import LoadMoreBtn from "./components/LoadMoreBtn";
 
-refs.formNews.addEventListener('submit', onSearch);
-refs.loadMoreBtn.addEventListener('click', onLoadMore);
+const newsApiService = new NewsApiService();
+const loadMoreBtn = new LoadMoreBtn({
+    selector: "#loadBtn",
+    isHidden: true,
+});
 
-function onSearch(event) {
+refs.formNews.addEventListener('submit', onSubmit);
+loadMoreBtn.button.addEventListener('click', fetchArticles);
+
+function onSubmit(event) {
     event.preventDefault();
+    loadMoreBtn.show();
     const form = event.currentTarget;
-    const { query } = form.elements;
-    getNews(query.value)
+    newsApiService.query = form.elements.news.value;
+
+    newsApiService.resetPage()
+    clearNewsList();
+    fetchArticles().catch(onError).finally(() => form.reset())
+}
+
+function fetchArticles() {
+    loadMoreBtn.disable()
+    return getArticalsMarkup().then(markup => {
+        updateNewsList(markup);
+        loadMoreBtn.enable();
+    }).catch(onError);
+}
+
+function getArticalsMarkup() {
+    return newsApiService.getNews()
     .then(({ articles }) => {
-        // refs.listNews.innerHTML = createMarkup(data.articles)
         if(articles.length === 0) throw new Error("No data!");
 
-        const markup = articles.reduce((markup, articles) => markup + createMarkup(articles), "");
-        updateNewsList(markup);
+        return articles.reduce(
+        (markup, articles) => markup + createMarkup(articles), "");
     })
-    .catch(onError)
-    .finally(() => form.reset());
 }
 
 function onError(err) {
-    console.error(err)
-    updateNewsList("<p>Not found!</p>")
+    console.error(err);
+    loadMoreBtn.hide();
+    clearNewsList();
+    updateNewsList('<img src="https://img.freepik.com/premium-vector/error-404-found-glitch-effect_8024-4.jpg" alt="404">')
 }
 
 function updateNewsList(markup) {
-    refs.listNews.innerHTML = markup
+    refs.listNews.insertAdjacentHTML('beforeend', markup);
 }
 
-function onLoadMore(event) {
-
+function clearNewsList() {
+    refs.listNews.innerHTML = "";
 }
