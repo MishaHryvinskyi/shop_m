@@ -19,27 +19,47 @@ function onSubmit(event) {
     const form = event.currentTarget;
     newsApiService.query = form.elements.news.value;
 
-    newsApiService.resetPage()
+    newsApiService.resetPage();
     clearNewsList();
-    fetchArticles().catch(onError).finally(() => form.reset())
+    fetchArticles().catch(onError).finally(() => form.reset());
 }
 
-function fetchArticles() {
-    loadMoreBtn.disable()
-    return getArticalsMarkup().then(markup => {
+async function fetchArticles() {
+    // loadMoreBtn.disable();
+    // return getArticalsMarkup().then(markup => {
+    //     updateNewsList(markup);
+    //     loadMoreBtn.enable();
+    // }).catch(onError);
+
+    loadMoreBtn.disable();
+    try{
+
+        const markup = await getArticalsMarkup();
         updateNewsList(markup);
         loadMoreBtn.enable();
-    }).catch(onError);
+
+    } catch(error) {
+        onError(error);
+    }
+   
 }
 
-function getArticalsMarkup() {
-    return newsApiService.getNews()
-    .then(({ articles }) => {
-        if(articles.length === 0) throw new Error("No data!");
+async function getArticalsMarkup() {
+    // return newsApiService.getNews()
+    // .then(({ articles }) => {
+    //     if(articles.length === 0) throw new Error("No data!");
 
-        return articles.reduce(
-        (markup, articles) => markup + createMarkup(articles), "");
-    })
+    //     return articles.reduce(
+    //     (markup, articles) => markup + createMarkup(articles), "");
+    // });
+    try {
+        const { articles } = await newsApiService.getNews()
+        if(articles.length === 0) throw new Error("No data!");
+        return articles.reduce((markup, articles) => markup + createMarkup(articles), "");
+    } catch(error) {
+        onError(error);
+    }
+
 }
 
 function onError(err) {
@@ -50,6 +70,7 @@ function onError(err) {
 }
 
 function updateNewsList(markup) {
+    if(markup !== undefined)
     refs.listNews.insertAdjacentHTML('beforeend', markup);
 }
 

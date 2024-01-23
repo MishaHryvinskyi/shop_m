@@ -1,6 +1,6 @@
 // const BASE_URL = "https://newsapi.org/v2/everything";
 // const API_KEY = "8ece45ab03a7434e9e4dffc54874f777";
-
+import axios from "axios";
 
 
 // function getNews(query) {
@@ -18,12 +18,24 @@ export default class NewsApiService {
         this.page = 1;
     }
 
-    getNews() {
+    async getNews() {
         const url = `${NewsApiService.ENDPOINT}?apiKey=${NewsApiService.API_KEY}&q=${this.query}&pageSize=5&page=${this.page}`;
-        return fetch(url).then((data) => {
-            this.incrementPage()
-            return data.json();
-        });
+        
+        const { data } = await axios.get(url);
+        this.incrementPage();
+
+        return data;
+
+        // axios
+        // return axios.get(url).then(({ data }) => {
+        //     this.incrementPage()
+        //     return data
+        // });
+        
+        // return fetch(url).then((data) => {
+        //     this.incrementPage()
+        //     return data.json();
+        // });
     }
 
     incrementPage() {
